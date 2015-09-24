@@ -77,6 +77,7 @@ function hasValidGameMode (req, res, next) {
 // POST
 
 function ssCreateStats (req, res) {
+  console.log(JSON.stringify(req.body));
   // Generate sessionid
   var sessionId
     , date = Date.now()
@@ -141,6 +142,7 @@ function ssCreateStats (req, res) {
 function ssUpdateStats (req, res) {
   var isEndOfRound = (req.get('endofround') === 'true');
   // Append the new data to the old
+  console.log(JSON.stringify(req.body));
   Stats.appendStats(req.body.stats, req.matchId, isEndOfRound, function (err) {
     if (err) {
       console.log(err);
@@ -152,6 +154,7 @@ function ssUpdateStats (req, res) {
 }
 
 function ssGameOver (req, res) {
+  console.log(JSON.stringify(req.body));
   if ( !req.get('matchduration') ) {
     return res.send(403, '\nsizzlingstats.com - Error: Missing matchduration.\n');
   }
@@ -173,6 +176,7 @@ function ssGameOver (req, res) {
 
 
 function ssStvUploadFinished (req, res) {
+  console.log(JSON.stringify(req.body));
   // If all went well, expire the sessionkey
   req.statsSession.expireSessionKey(function (err) {
     if (err) {
