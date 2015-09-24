@@ -23,6 +23,7 @@ var Session = mongoose.model('Session', sessionSchema);
 module.exports = Session;
 
 // Cron job to expire old session keys every n minutes
+// require('human-to-cron')(`once each ${cfg.session_expiry_interval} minutes`);
 var expireSessionKeyJob = new cronJob('0 */' + cfg.session_expiry_interval + ' * * * *', function() {
 
   Session.find({ "timeout": { $lte: Date.now() } }, function(err, sessions) {

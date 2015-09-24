@@ -24,6 +24,7 @@ module.exports = function (app) {
 
 function isValidVersion (req, res, next) {
   // For debugging
+  // TODO: use npmjs.com/package/debug or similar instead.
   // console.log('SS-API headers:', req.headers);
   // console.log('SS-API body:', util.inspect(req.body, false, null, false));
   // Check header for api version

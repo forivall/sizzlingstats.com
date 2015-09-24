@@ -72,10 +72,11 @@ var statsSchema = new mongoose.Schema({
 , viewCount: Number
 , pluginVersion: String
 , isLive: { type: Boolean, default: false }
+// , raw: [mongoose.Schema.Types.Mixed] // TODO: store raw requests and process in message queue -- don't store here though.
 });
 
 statsSchema.options.toObject = {
-  // Turn the players array into an "associative array" using steamid as key
+  // Turn the players array into a map using steamid as key
   //  and also add the metadata properties.
   transform: function reducePlayersAndAddMetadata(doc, ret, options) {
     if (!options.playerData) {
@@ -83,6 +84,8 @@ statsSchema.options.toObject = {
     }
     var playerData = options.playerData;
     if (ret.players) {
+      // _.forEach(ret.players, function(item) { if(playerdata[item.steamid]) {...} })
+      // ret.players = _.indexBy(ret.players, 'steamid');
       ret.players = ret.players.reduce(function(reduced, item) {
         if (playerData[item.steamid]) {
           item.avatar = playerData[item.steamid].avatar;
@@ -191,6 +194,12 @@ statsSchema.statics.appendStats = function(newStats, matchId, isEndOfRound, cb) 
 
       // look for the oldPlayer with a matching steamid
       // and add new values to the stat arrays
+
+      var oldPlayer = _.findWhere(stats.players, {steamid: player.steamid});
+      if (oldPlayer) {
+
+      }
+
       stats.players.forEach(function(oldPlayer) {
 
         if (oldPlayer.steamid === player.steamid) {
@@ -249,6 +258,9 @@ statsSchema.statics.appendStats = function(newStats, matchId, isEndOfRound, cb) 
         var players = stats.players.toObject();
         players[players.length] = newPlayer;
         stats.players = players;
+
+        // TODO: see if this will work fine
+        // stats.players.push(newPlayer);
       }
 
     });
